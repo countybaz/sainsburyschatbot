@@ -16,11 +16,11 @@ const Index = () => {
                 <img 
                   src="/lovable-uploads/cbdedd35-0ec9-4e16-8866-51e309907ad3.png" 
                   alt="Sainsbury's Review Program Logo" 
-                  className="h-10 w-auto sm:h-12" 
+                  className="h-8 w-auto sm:h-12" 
                   width="120" 
                   height="120"
                 />
-                <h1 className="text-lg sm:text-xl font-bold text-orange-600 ml-3">Sainsbury's Review Program</h1>
+                <h1 className="text-base sm:text-xl font-bold text-orange-600 ml-2 truncate max-w-[120px] sm:max-w-none">Sainsbury's</h1>
               </div>
               <div className="flex-grow flex justify-end">
                 <FAQ />
