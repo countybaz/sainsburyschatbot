@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -21,8 +22,26 @@ type MessageId =
 const ChatBot: React.FC = () => {
   const isMobile = useIsMobile();
   const chatContainerRef = useRef<HTMLDivElement>(null);
-  const [visibleMessages, setVisibleMessages] = useState<MessageId[]>([]);
-  const [showClaimButton, setShowClaimButton] = useState(false);
+  
+  // Initialize state from sessionStorage if available
+  const [visibleMessages, setVisibleMessages] = useState<MessageId[]>(() => {
+    const savedMessages = sessionStorage.getItem('chatBotMessages');
+    return savedMessages ? JSON.parse(savedMessages) : [];
+  });
+  
+  const [showClaimButton, setShowClaimButton] = useState(() => {
+    const savedClaimButton = sessionStorage.getItem('showClaimButton');
+    return savedClaimButton ? JSON.parse(savedClaimButton) : false;
+  });
+
+  // Save state to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem('chatBotMessages', JSON.stringify(visibleMessages));
+  }, [visibleMessages]);
+
+  useEffect(() => {
+    sessionStorage.setItem('showClaimButton', JSON.stringify(showClaimButton));
+  }, [showClaimButton]);
 
   // Function to scroll to the bottom of the chat
   const scrollToBottom = () => {
@@ -55,13 +74,18 @@ const ChatBot: React.FC = () => {
     }
   }, []);
 
-  // Show initial messages when component mounts with slower timing
+  // Show initial messages when component mounts with slower timing, but only if there are no messages yet
   useEffect(() => {
-    // Only show the first two welcome messages and the start button initially
-    setTimeout(() => showMessage('welcome1'), 1000);
-    setTimeout(() => showMessage('welcome2'), 2500);
-    setTimeout(() => showMessage('welcome3'), 4000);
-    setTimeout(() => showMessage('start-button'), 5500);
+    if (visibleMessages.length === 0) {
+      // Only show the first two welcome messages and the start button initially
+      setTimeout(() => showMessage('welcome1'), 1000);
+      setTimeout(() => showMessage('welcome2'), 2500);
+      setTimeout(() => showMessage('welcome3'), 4000);
+      setTimeout(() => showMessage('start-button'), 5500);
+    } else {
+      // If returning to the page, just scroll to the bottom
+      setTimeout(scrollToBottom, 100);
+    }
   }, []);
 
   const handleStartClick = () => {
